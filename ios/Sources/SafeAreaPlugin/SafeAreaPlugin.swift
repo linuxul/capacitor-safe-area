@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import Capacitor
 
 @objc(SafeAreaPlugin)
@@ -6,9 +7,9 @@ public class SafeAreaPlugin: CAPPlugin, CAPBridgedPlugin {
     public let identifier = "SafeAreaPlugin"
     public let jsName = "SafeArea"
     public let pluginMethods: [CAPPluginMethod] = [
-        CAPPluginMethod(name: "setSystemBarsStyle", returnType: CAPPluginReturnNone),
-        CAPPluginMethod(name: "showSystemBars", returnType: CAPPluginReturnNone),
-        CAPPluginMethod(name: "hideSystemBars", returnType: CAPPluginReturnNone)
+        CAPPluginMethod(name: "setSystemBarsStyle", returnType: .none),
+        CAPPluginMethod(name: "showSystemBars", returnType: .none),
+        CAPPluginMethod(name: "hideSystemBars", returnType: .none)
     ]
 
     public private(set) var hideHomeIndicator: Bool = false
