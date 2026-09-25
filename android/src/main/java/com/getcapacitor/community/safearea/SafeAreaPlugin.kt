@@ -12,6 +12,7 @@ import androidx.webkit.WebViewCompat
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
 import com.getcapacitor.PluginMethod
+import com.getcapacitor.PluginThread
 import com.getcapacitor.annotation.CapacitorPlugin
 import java.util.Locale
 import java.util.regex.Pattern
@@ -197,7 +198,8 @@ public class SafeAreaPlugin : Plugin() {
         return null
     }
 
-    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+    // The methods change the window, so they run on the main thread, in the order of the calls.
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE, thread = PluginThread.MAIN)
     public fun setSystemBarsStyle(call: PluginCall) {
         val style = call.getString("style")
         val type = call.getString("type")
@@ -213,10 +215,8 @@ public class SafeAreaPlugin : Plugin() {
             navigationBarStyle = systemBarsStyle
         }
 
-        bridge.executeOnMainThread {
-            updateSystemBarsStyle()
-            call.resolve()
-        }
+        updateSystemBarsStyle()
+        call.resolve()
     }
 
     override fun handleOnConfigurationChanged(newConfig: Configuration?) {
@@ -229,24 +229,20 @@ public class SafeAreaPlugin : Plugin() {
         navigationBarStyle?.let { setSystemBarsStyle(activity, it, SystemBarsType.NAVIGATION_BAR) }
     }
 
-    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE, thread = PluginThread.MAIN)
     public fun showSystemBars(call: PluginCall) {
         val systemBarsType = getSystemBarsTypeFromString(call.getString("type"))
 
-        bridge.executeOnMainThread {
-            setSystemBarsHidden(false, systemBarsType)
-            call.resolve()
-        }
+        setSystemBarsHidden(false, systemBarsType)
+        call.resolve()
     }
 
-    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE, thread = PluginThread.MAIN)
     public fun hideSystemBars(call: PluginCall) {
         val systemBarsType = getSystemBarsTypeFromString(call.getString("type"))
 
-        bridge.executeOnMainThread {
-            setSystemBarsHidden(true, systemBarsType)
-            call.resolve()
-        }
+        setSystemBarsHidden(true, systemBarsType)
+        call.resolve()
     }
 
     private fun setSystemBarsHidden(hidden: Boolean, type: SystemBarsType?) {
