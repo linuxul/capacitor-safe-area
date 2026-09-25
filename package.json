@@ -1,6 +1,6 @@
 {
   "name": "@capacitor-community/safe-area",
-  "version": "8.0.1",
+  "version": "9.0.0",
   "description": "Capacitor Plugin that patches the safe area for older versions of Chromium",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -63,7 +63,7 @@
     "typescript": "^5.9.3"
   },
   "peerDependencies": {
-    "@capacitor/core": ">=8.0.0"
+    "@capacitor/core": ">=9.0.0"
   },
   "prettier": "@ionic/prettier-config",
   "swiftlint": "@ionic/swiftlint-config",
