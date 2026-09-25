@@ -6,10 +6,13 @@ import Capacitor
 public class SafeAreaPlugin: CAPPlugin, CAPBridgedPlugin {
     public let identifier = "SafeAreaPlugin"
     public let jsName = "SafeArea"
+    // The methods stay synchronous: the bridge queue runs them in the order of the calls, and each hands its UIKit
+    // work to the main queue in that order (the bridge's status bar setters do it themselves), so the last call wins.
+    // Async methods would not keep that order.
     public let pluginMethods: [CAPPluginMethod] = [
-        CAPPluginMethod(name: "setSystemBarsStyle", returnType: .none),
-        CAPPluginMethod(name: "showSystemBars", returnType: .none),
-        CAPPluginMethod(name: "hideSystemBars", returnType: .none)
+        .none("setSystemBarsStyle", SafeAreaPlugin.setSystemBarsStyle(_:)),
+        .none("showSystemBars", SafeAreaPlugin.showSystemBars),
+        .none("hideSystemBars", SafeAreaPlugin.hideSystemBars)
     ]
 
     public private(set) var hideHomeIndicator: Bool = false
@@ -45,7 +48,7 @@ public class SafeAreaPlugin: CAPPlugin, CAPBridgedPlugin {
         return SystemBarsType(rawValue: value?.uppercased() ?? "")
     }
 
-    @objc func setSystemBarsStyle(_ call: CAPPluginCall) {
+    func setSystemBarsStyle(_ call: CAPPluginCall) {
         let style = call.getString("style")
         let type = call.getString("type")
 
@@ -79,7 +82,7 @@ public class SafeAreaPlugin: CAPPlugin, CAPBridgedPlugin {
         }
     }
 
-    @objc func showSystemBars(_ call: CAPPluginCall) {
+    func showSystemBars(_ call: CAPPluginCall) {
         let type = call.getString("type")
         let systemBarsType = getSystemBarsTypeFromString(type)
 
@@ -89,7 +92,7 @@ public class SafeAreaPlugin: CAPPlugin, CAPBridgedPlugin {
         }
     }
 
-    @objc func hideSystemBars(_ call: CAPPluginCall) {
+    func hideSystemBars(_ call: CAPPluginCall) {
         let type = call.getString("type")
         let systemBarsType = getSystemBarsTypeFromString(type)
 
